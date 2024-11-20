@@ -16,5 +16,11 @@
     "@types/node": "^22.9.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.4.0",
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1"
   }
 }
