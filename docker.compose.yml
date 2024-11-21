@@ -1,0 +1,27 @@
+version: '3'
+services:
+  backend:
+    container_name: 'backend'
+    build: ./backend
+    ports:
+      - "8080:3000"
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  db:
+    container_name: 'database'
+    image: postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: tripdb
+    ports:
+      - "5433:5432"
+    networks:
+      - app-network
+      
+networks:
+  app-network:
+    driver: bridge
