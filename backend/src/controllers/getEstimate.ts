@@ -83,7 +83,8 @@ export const getEstimate = async (
     });
   } catch (error: any) {
     return res.status(500).json({
-      error: error.message || "Um erro aconteceu ao processar a operação",
+      error_code: "INTERNAL_SERVER_ERROR",
+      error_description: "Ocorreu um erro ao processar sua solicitação",
     });
   }
 };

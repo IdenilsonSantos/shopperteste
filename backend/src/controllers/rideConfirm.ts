@@ -73,6 +73,9 @@ export const rideConfirm = async (
 
     return res.status(200).json({ success: true });
   } catch (error) {
-    return res.status(500).json({ error: "Error confirming trip" });
+    return res.status(500).json({
+      error_code: "INTERNAL_SERVER_ERROR",
+      error_description: "Ocorreu um erro ao processar sua solicitação",
+    });
   }
 };

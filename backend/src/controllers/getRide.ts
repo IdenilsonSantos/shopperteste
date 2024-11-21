@@ -26,7 +26,7 @@ export const getRide = async (req: Request, res: Response) => {
     if (!id) {
       return res.status(400).json({
         error_code: "INVALID_DATA",
-        error_description: "O parâmetro 'id' é obrigatório na query string.",
+        error_description: "O cliente é orbigatório",
       });
     }
 
@@ -49,7 +49,7 @@ export const getRide = async (req: Request, res: Response) => {
       return res.status(404).json({
         error_code: "NO_RIDES_FOUND",
         error_description:
-          "Nenhuma viagem encontrada para os critérios fornecidos.",
+          "Nenhuma viagem encontrada para os critérios fornecidos",
       });
     }
 
@@ -60,7 +60,7 @@ export const getRide = async (req: Request, res: Response) => {
   } catch (error) {
     return res.status(500).json({
       error_code: "INTERNAL_SERVER_ERROR",
-      error_description: "Ocorreu um erro ao processar sua solicitação.",
+      error_description: "Ocorreu um erro ao processar sua solicitação",
     });
   }
 };
