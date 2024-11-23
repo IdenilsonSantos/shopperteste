@@ -1,8 +1,9 @@
 import { useState } from "react";
-import Button from "./components/Button";
-import InputField from "./components/Input";
-import fetchData from "./utils/fetch";
+import Button from "../components/Button";
+import InputField from "../components/Input";
+import fetchData from "../utils/fetch";
 import { Bounce, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 interface EstimateValues {
   origin: string;
@@ -10,23 +11,25 @@ interface EstimateValues {
   customer_id?: string;
 }
 
-export default function App() {
+export default function Estimate() {
+  const navigate = useNavigate();
   const [values, setValues] = useState<EstimateValues>({
     origin: "",
     destination: "",
     customer_id: "",
   });
-  const [data, setData] = useState<Record<string, unknown> | null>(null);
 
   const getEstimate = async (): Promise<void> => {
-    setData(null);
     try {
       const response = await fetchData<Record<string, unknown>>(
         "http://localhost:8080/ride/estimate",
         "POST",
         values
       );
-      setData(response);
+      navigate(
+        `/options?customer_id=${values.customer_id}&origin=${values.origin}&destination=${values.destination}`,
+        { state: response }
+      );
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error(error || "Ocorreu um erro ao buscar a estimativa.", {
@@ -43,8 +46,6 @@ export default function App() {
         [field]: e.target.value,
       }));
     };
-
-  console.log("DT", data);
 
   return (
     <div className="flex h-full container my-28">
