@@ -3,6 +3,7 @@ import { ChangeEvent } from "react";
 interface InputFieldProps {
   label?: string;
   value?: string;
+  name?: string;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
 }
@@ -11,6 +12,7 @@ const InputField: React.FC<InputFieldProps> = ({
   value = "",
   label,
   onChange = () => {},
+  name = "",
   placeholder = "Digite aqui",
 }) => {
   return (
@@ -22,6 +24,7 @@ const InputField: React.FC<InputFieldProps> = ({
       )}
       <input
         type="text"
+        name={name}
         onChange={onChange}
         placeholder={placeholder}
         value={value}
