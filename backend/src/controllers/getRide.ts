@@ -54,8 +54,11 @@ export const getRide = async (req: Request, res: Response) => {
     }
 
     return res.status(200).json({
-        customer_id: id,
-        rides: rows
+      customer_id: id,
+      rides: rows.map((row) => ({
+        ...row,
+        driver: findDriverById(row.driver),
+      })),
     });
   } catch (error) {
     return res.status(500).json({

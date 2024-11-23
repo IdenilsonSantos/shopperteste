@@ -13,6 +13,7 @@ interface RideRequest {
   destination: string;
   customer_id: string;
   driver: { id: string };
+  totalCost: number;
   distance: number;
   duration?: number;
 }
@@ -24,8 +25,15 @@ export const rideConfirm = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const { origin, destination, customer_id, driver, distance, duration } =
-      req.body as RideRequest;
+    const {
+      origin,
+      destination,
+      customer_id,
+      driver,
+      distance,
+      duration,
+      totalCost,
+    } = req.body as RideRequest;
 
     if (
       !origin ||
@@ -66,13 +74,25 @@ export const rideConfirm = async (
       });
     }
 
+    const currentDate = new Date();
     const { rows } = await pool.query(
-      "INSERT INTO TripConfirm (origin, destination, distance, duration, confirmed, customer, driver) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
-      [origin, destination, distance, duration, true, customer_id, getDriver.id]
+      "INSERT INTO TripConfirm (origin, destination, distance, duration, confirmed, customer, driver, date, totalcost) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
+      [
+        origin,
+        destination,
+        distance,
+        duration,
+        true,
+        customer_id,
+        getDriver.id,
+        currentDate,
+        totalCost || 0.0,
+      ]
     );
 
     return res.status(200).json({ success: true });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       error_code: "INTERNAL_SERVER_ERROR",
       error_description: "Ocorreu um erro ao processar sua solicitação",
