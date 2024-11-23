@@ -52,9 +52,8 @@ export const getEstimate = async (
       origin,
       destination
     );
-    const routeDistanceInKm: number = parseFloat(
-      routeDetails.distance.replace(" km", "")
-    );
+    const routeDistanceInKm: number = parseFloat(routeDetails.distance.replace(' km', '')
+    .replace(',', '.'));
 
     const availableDrivers: Driver[] = await getAvailableDrivers(
       routeDistanceInKm
