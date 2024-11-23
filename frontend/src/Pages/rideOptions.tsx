@@ -1,10 +1,15 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { formatCurrency } from "../utils/currency";
+import Button from "../components/Button";
+import fetchData from "../utils/fetch";
+import { Bounce, toast } from "react-toastify";
 
 export default function RideOptionsPage() {
-  const { state } = useLocation();
+  const { state, search } = useLocation();
+  const navigate = useNavigate()
 
-  const { origin, destination, availableDrivers } = state;
+  const { origin, destination, availableDrivers, distance, duration } = state;
+  const params = Object.fromEntries(new URLSearchParams(search));
 
   const hasLocationData = origin && destination;
 
@@ -14,6 +19,38 @@ export default function RideOptionsPage() {
   const mapUrl = hasLocationData
     ? `https://maps.googleapis.com/maps/api/staticmap?size=600x400&path=color:black|weight:5|${path}&markers=color:green|label:A|${origin.latitude},${origin.longitude}&markers=color:red|label:B|${destination.latitude},${destination.longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}`
     : "";
+
+  const rideConfirm = async (driver: any): Promise<void> => {
+
+    console.log(driver)
+    try {
+      const response = await fetchData<Record<string, unknown>>(
+        "http://localhost:8080/ride/confirm",
+        "PATCH",
+        {
+          customer_id: params.customer_id,
+          origin: params.origin,
+          destination: params.destination,
+          distance,
+          duration,
+          driver: {
+            id: driver.id,
+            name: driver.name,
+          },
+          totalCost: driver.totalCost,
+        }
+      );
+
+      if (response && response.success) {
+        navigate('/history')
+      }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(error || "Ocorreu um erro ao confirmar corrida", {
+        transition: Bounce,
+      });
+    }
+  };
 
   return (
     <div className="flex flex-wrap w-full h-full my-12 justify-between">
@@ -56,7 +93,11 @@ export default function RideOptionsPage() {
                   <td>{driver.evaluation}</td>
                   <td>{formatCurrency(driver.totalCost)}</td>
                   <th>
-                    <button className="btn btn-ghost btn-xs">Escolher</button>
+                    <Button
+                      className="btn btn-ghost btn-xs"
+                      label="Escolher"
+                      onClick={() => rideConfirm(driver)}
+                    />
                   </th>
                 </tr>
               ))
