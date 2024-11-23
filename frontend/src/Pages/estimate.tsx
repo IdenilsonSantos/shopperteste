@@ -26,6 +26,7 @@ export default function Estimate() {
         "POST",
         values
       );
+
       navigate(
         `/options?customer_id=${values.customer_id}&origin=${values.origin}&destination=${values.destination}`,
         { state: response }
