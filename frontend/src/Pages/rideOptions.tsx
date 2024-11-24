@@ -20,9 +20,9 @@ export default function RideOptionsPage() {
     ? `https://maps.googleapis.com/maps/api/staticmap?size=600x400&path=color:black|weight:5|${path}&markers=color:green|label:A|${origin.latitude},${origin.longitude}&markers=color:red|label:B|${destination.latitude},${destination.longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}`
     : "";
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const rideConfirm = async (driver: any): Promise<void> => {
 
-    console.log(driver)
     try {
       const response = await fetchData<Record<string, unknown>>(
         "http://localhost:8080/ride/confirm",
@@ -71,7 +71,8 @@ export default function RideOptionsPage() {
           </thead>
           <tbody>
             {availableDrivers && availableDrivers.length > 0 ? (
-              availableDrivers.map((driver) => (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              availableDrivers.map((driver: any) => (
                 <tr key={driver.id}>
                   <td>
                     <div className="flex items-center gap-3">
@@ -111,7 +112,7 @@ export default function RideOptionsPage() {
           </tbody>
         </table>
       </div>
-      <div className="w-full md:w-1/2 flex items-center justify-center">
+      <div className="w-full md:w-1/2 h-[600px] flex items-center justify-center">
         {hasLocationData ? (
           <img src={mapUrl} alt="Route Map" className="rounded shadow-lg" />
         ) : (
