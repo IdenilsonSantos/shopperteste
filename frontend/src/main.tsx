@@ -10,7 +10,7 @@ createRoot(document.getElementById("root")!).render(
     <AppRoutes />
     <ToastContainer
       position="top-right"
-      autoClose={1000}
+      autoClose={1800}
       hideProgressBar={false}
       newestOnTop={false}
       closeOnClick

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import InputField from "../components/Input";
 import SelectInputField from "../components/Select";
 import Drivers from "../utils/driversMock.json";
@@ -6,6 +6,7 @@ import fetchData from "../utils/fetch";
 import { Bounce, toast } from "react-toastify";
 import { formatCurrency } from "../utils/currency";
 import { formatDate, formatDuration } from "../utils/date";
+import Button from "../components/Button";
 
 interface Driver {
   name: string;
@@ -62,17 +63,24 @@ export default function RideHistoryPage() {
       if (response) {
         setData(response.rides || []);
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      toast.error(error || "Ocorreu um erro ao buscar hisórico de corridas", {
+      toast.error(`${error}${', tente fornecer um novo filtro'}` || "Ocorreu um erro ao buscar o histórico de corridas", {
         transition: Bounce,
       });
       setData([])
     }
   }, [values.id, values.driver_id]);
 
-  useEffect(() => {
+  const applyFilter = async () => {
     getHistory();
-  }, [getHistory]);
+  };
+
+  useEffect(() => {
+    if (!values.id) {
+      setData([])
+    }
+  }, [values])
 
   const rideList = useMemo(() => {
     return data.map(
@@ -104,7 +112,7 @@ export default function RideHistoryPage() {
         <h1 className="text-2xl font-bold mb-6">
           Histórico de corridas
         </h1>
-        <div className="flex gap-2 mb-4">
+        <div className="flex gap-2 mb-4 items-center">
           <InputField
             label="Id do usuário"
             value={values.id}
@@ -118,6 +126,7 @@ export default function RideHistoryPage() {
             onChange={handleChange}
             name="driver_id"
           />
+          <Button className="mt-6" label="Aplicar Filtro" onClick={applyFilter} />
         </div>
         <div className="overflow-x-auto max-h-[400px]">
           <table className="table min-w-full">
@@ -136,7 +145,7 @@ export default function RideHistoryPage() {
               {values.id === "" ? (
                 <tr>
                   <td colSpan={7} className="text-center text-green-500">
-                    Digite o id de um usuário para ver as viagens
+                    Digite o id de um usuário para aplicar filtro e ver as viagens
                   </td>
                 </tr>
               ) : rideList.length > 0 ? (

@@ -1,4 +1,4 @@
-import React from "react";
+import { twJoin } from 'tailwind-merge'
 
 interface ButtonProps {
   label?: string;
@@ -9,10 +9,10 @@ interface ButtonProps {
 const Button: React.FC<ButtonProps> = ({
   label = "Enviar",
   onClick = () => {},
-  className = "btn btn-neutral",
+  className = "",
 }) => {
   return (
-    <button onClick={onClick} className={className}>
+    <button onClick={onClick} className={twJoin("btn btn-neutral", className)}>
       {label}
     </button>
   );
