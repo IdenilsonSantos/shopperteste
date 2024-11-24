@@ -1,8 +1,8 @@
-version: '3'
 services:
   backend:
     container_name: 'backend'
     build: ./backend
+    restart: always
     ports:
       - "8080:3000"
     depends_on:
@@ -10,9 +10,21 @@ services:
     networks:
       - app-network
 
+  frontend:
+    container_name: 'frontend'
+    build: ./frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
   db:
     container_name: 'database'
     image: postgres
+    restart: always
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
