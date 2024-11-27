@@ -2,7 +2,7 @@ import { Client, TravelMode } from "@googlemaps/google-maps-services-js";
 import pool from "../config/database";
 
 const googleMapsClient = new Client({});
-const GOOGLE_MAPS_API_KEY: string | any = process.env.GOOGLE_MAPS_API_KEY;
+const GOOGLE_API_KEY: string | any = process.env.GOOGLE_API_KEY;
 
 export const getRouteDetails = (
   origin: string,
@@ -15,7 +15,7 @@ export const getRouteDetails = (
           origin,
           destination,
           mode: TravelMode.driving,
-          key: GOOGLE_MAPS_API_KEY,
+          key: GOOGLE_API_KEY,
         },
       })
       .then((response) => {

@@ -17,7 +17,7 @@ export default function RideOptionsPage() {
     ? `${origin.latitude},${origin.longitude}|${destination.latitude},${destination.longitude}`
     : "";
   const mapUrl = hasLocationData
-    ? `https://maps.googleapis.com/maps/api/staticmap?size=600x400&path=color:black|weight:5|${path}&markers=color:green|label:A|${origin.latitude},${origin.longitude}&markers=color:red|label:B|${destination.latitude},${destination.longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}`
+    ? `https://maps.googleapis.com/maps/api/staticmap?size=600x400&path=color:black|weight:5|${path}&markers=color:green|label:A|${origin.latitude},${origin.longitude}&markers=color:red|label:B|${destination.latitude},${destination.longitude}&key=${process.env.GOOGLE_API_KEY}`
     : "";
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
