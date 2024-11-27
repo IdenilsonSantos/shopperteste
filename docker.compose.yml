@@ -31,9 +31,15 @@ services:
       POSTGRES_DB: tripdb
     ports:
       - "5433:5432"
+    volumes:
+      - ./backend:/docker-entrypoint-initdb.d
     networks:
       - app-network
-      
+
+volumes:
+  postgres_data:
+    driver: local
+
 networks:
   app-network:
     driver: bridge

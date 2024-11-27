@@ -1,12 +1,5 @@
 import { Request, Response } from "express";
 import pool from "../config/database";
-import Drivers from "../utils/driversMock.json";
-
-interface Driver {
-  id: number;
-  name: string;
-  minDistance: number;
-}
 
 interface RideRequest {
   origin: string;
@@ -18,7 +11,6 @@ interface RideRequest {
   duration?: number;
 }
 
-const drivers: Partial<Driver>[] = Drivers;
 
 export const rideConfirm = async (
   req: Request,
@@ -50,10 +42,16 @@ export const rideConfirm = async (
       });
     }
 
+    const queryDriver = "SELECT * FROM drivers WHERE id = $1"
+    const paramsDriver = [driver.id];
+
+    const { rows: drivers } = await pool.query(queryDriver, paramsDriver);
+
+
     const getDriver: any = drivers.find((d: any) => d.id === driver.id);
 
     const eligibleDrivers = drivers.filter(
-      (driver: any) => distance >= driver.minDistance
+      (driver: any) => distance >= driver.min_distance
     );
 
     if (!getDriver || eligibleDrivers.length === 0) {
@@ -66,7 +64,7 @@ export const rideConfirm = async (
     if (
       typeof distance !== "number" ||
       distance <= 0 ||
-      distance < getDriver.minDistance
+      distance < getDriver.min_distance
     ) {
       return res.status(406).json({
         error_code: "INVALID_DISTANCE",
@@ -75,16 +73,21 @@ export const rideConfirm = async (
     }
 
     const currentDate = new Date();
+
+    const driversToSave = {
+      id: drivers[0].id,
+      name: drivers[0].name
+    }
+
     const { rows } = await pool.query(
-      "INSERT INTO TripConfirm (origin, destination, distance, duration, confirmed, customer, driver, date, totalcost) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
+      "INSERT INTO TripConfirm (origin, destination, distance, duration, customer, driver, date, totalcost) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
       [
         origin,
         destination,
         distance,
         duration,
-        true,
         customer_id,
-        getDriver.id,
+        driversToSave,
         currentDate,
         totalCost || 0.0,
       ]

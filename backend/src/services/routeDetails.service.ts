@@ -1,20 +1,15 @@
 import { Client, TravelMode } from "@googlemaps/google-maps-services-js";
-import Drivers from "../utils/driversMock.json";
+import pool from "../config/database";
 
 const googleMapsClient = new Client({});
 const GOOGLE_MAPS_API_KEY: string | any = process.env.GOOGLE_MAPS_API_KEY;
 
 interface Driver {
+  id: number;
   name: string;
-  minDistance: number;
-  costPerKm: number;
-  description: string;
-  vehicle: string;
-  evaluation: string;
-  comments: string;
+  min_distance: number;
+  cost_per_km: number;
 }
-
-const drivers: Partial<Driver>[] = Drivers;
 
 export const getRouteDetails = (
   origin: string,
@@ -44,17 +39,17 @@ export const getRouteDetails = (
   });
 };
 
-export const getAvailableDrivers = (routeDistance: number): any[] => {
+export const getAvailableDrivers = async (routeDistance: number): Promise<Partial<Driver>[]> => {
+  const queryDriver = "SELECT * FROM drivers";
+  const { rows: drivers } = await pool.query(queryDriver);
+
   return drivers
-    .filter(
-      (driver) =>
-        driver.minDistance !== undefined && driver.minDistance <= routeDistance
-    )
-    .map((driver) => {
-      const costPerKm = driver.costPerKm ?? 0;
+    .filter((driver: Driver) => driver.min_distance <= routeDistance)
+    .map(({ min_distance, cost_per_km, ...driver }: Driver) => {
+      const totalCost = (cost_per_km ?? 0) * routeDistance;
       return {
         ...driver,
-        totalCost: costPerKm * routeDistance,
+        totalCost,
       };
     })
     .sort((a, b) => a.totalCost - b.totalCost);

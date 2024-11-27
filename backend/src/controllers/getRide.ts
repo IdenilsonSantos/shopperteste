@@ -8,16 +8,6 @@ interface Driver {
   minDistance: number;
 }
 
-const drivers: Partial<Driver>[] = Drivers;
-
-const findDriverById = (
-  driverId: string | undefined
-): Partial<Driver> | null => {
-  if (!driverId) return null;
-  const driver = drivers.find((d) => d.id === Number(driverId));
-  return driver || null;
-};
-
 export const getRide = async (req: Request, res: Response) => {
   try {
     const { driver_id } = req.query;
@@ -30,18 +20,22 @@ export const getRide = async (req: Request, res: Response) => {
       });
     }
 
-    const driver = driver_id ? findDriverById(driver_id as string) : null;
-    if (driver_id && !driver) {
+    const queryDriver = "SELECT  FROM drivers WHERE id = $1"
+    const paramsDriver = [driver_id];
+
+    const { rows: drivers } = await pool.query(queryDriver, paramsDriver);
+
+    if (driver_id && !drivers) {
       return res.status(400).json({
         error_code: "INVALID_DRIVER",
         error_description: "Motorista não encontrado",
       });
     }
 
-    const query = driver
-      ? "SELECT * FROM tripconfirm WHERE customer = $1 AND driver = $2 ORDER BY id DESC"
+    const query = driver_id
+      ? "SELECT * FROM tripconfirm WHERE customer = $1 AND driver->>'id' = $2 ORDER BY id DESC"
       : "SELECT * FROM tripconfirm WHERE customer = $1 ORDER BY id DESC";
-    const params = driver ? [id, driver.id] : [id];
+    const params = driver_id ? [id, driver_id] : [id];
 
     const { rows } = await pool.query(query, params);
 
@@ -56,8 +50,7 @@ export const getRide = async (req: Request, res: Response) => {
     return res.status(200).json({
       customer_id: id,
       rides: rows.map((row) => ({
-        ...row,
-        driver: findDriverById(row.driver),
+        ...row
       })),
     });
   } catch (error) {
