@@ -1,14 +1,62 @@
 [
-    {
-      "value": 1,
-      "label": "Homer Simpson"
-    },
-    {
-      "value": 2,
-      "label": "Dominic Toretto"
-    },
-    {
-      "value": 3,
-      "label": "James Bond"
-    }
-  ]
+  {
+    "label": "Homer Simpson",
+    "value": 1
+  },
+  {
+    "label": "Dominic Toretto",
+    "value": 2
+  },
+  {
+    "label": "James Bond",
+    "value": 3
+  },
+  {
+    "label": "Mario Mario",
+    "value": 4
+  },
+  {
+    "label": "Optimus Prime",
+    "value": 5
+  },
+  {
+    "label": "Tony Stark",
+    "value": 6
+  },
+  {
+    "label": "Rick Sanchez",
+    "value": 7
+  },
+  {
+    "label": "Sarah Connor",
+    "value": 8
+  },
+  {
+    "label": "Bruce Wayne",
+    "value": 9
+  },
+  {
+    "label": "Scooby-Doo",
+    "value": 10
+  },
+  {
+    "label": "Doc Brown",
+    "value": 11
+  },
+  {
+    "label": "Lara Croft",
+    "value": 12
+  },
+  {
+    "label": "Ellen Ripley",
+    "value": 13
+  },
+  {
+    "label": "Duke Nukem",
+    "value": 14
+  },
+  {
+    "label": "Wonder Woman",
+    "value": 15
+  }
+]
