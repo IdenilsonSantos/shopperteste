@@ -4,13 +4,6 @@ import pool from "../config/database";
 const googleMapsClient = new Client({});
 const GOOGLE_MAPS_API_KEY: string | any = process.env.GOOGLE_MAPS_API_KEY;
 
-interface Driver {
-  id: number;
-  name: string;
-  min_distance: number;
-  cost_per_km: number;
-}
-
 export const getRouteDetails = (
   origin: string,
   destination: string
@@ -39,18 +32,17 @@ export const getRouteDetails = (
   });
 };
 
-export const getAvailableDrivers = async (routeDistance: number): Promise<Partial<Driver>[]> => {
+export const getAvailableDrivers = async (
+  routeDistance: number
+): Promise<any> => {
   const queryDriver = "SELECT * FROM drivers";
   const { rows: drivers } = await pool.query(queryDriver);
 
   return drivers
-    .filter((driver: Driver) => driver.min_distance <= routeDistance)
-    .map(({ min_distance, cost_per_km, ...driver }: Driver) => {
+    .filter(({ min_distance }) => min_distance <= routeDistance)
+    .map(({ min_distance, cost_per_km, ...driver }) => {
       const totalCost = (cost_per_km ?? 0) * routeDistance;
-      return {
-        ...driver,
-        totalCost,
-      };
+      return { ...driver, totalCost };
     })
     .sort((a, b) => a.totalCost - b.totalCost);
 };

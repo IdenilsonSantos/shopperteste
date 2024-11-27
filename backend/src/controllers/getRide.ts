@@ -1,12 +1,5 @@
 import { Request, Response } from "express";
 import pool from "../config/database";
-import Drivers from "../utils/driversMock.json";
-
-interface Driver {
-  id: number;
-  name: string;
-  minDistance: number;
-}
 
 export const getRide = async (req: Request, res: Response) => {
   try {
@@ -20,7 +13,7 @@ export const getRide = async (req: Request, res: Response) => {
       });
     }
 
-    const queryDriver = "SELECT  FROM drivers WHERE id = $1"
+    const queryDriver = "SELECT * FROM drivers WHERE id = $1"
     const paramsDriver = [driver_id];
 
     const { rows: drivers } = await pool.query(queryDriver, paramsDriver);

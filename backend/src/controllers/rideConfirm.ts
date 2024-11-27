@@ -80,7 +80,7 @@ export const rideConfirm = async (
     }
 
     const { rows } = await pool.query(
-      "INSERT INTO TripConfirm (origin, destination, distance, duration, customer, driver, date, totalcost) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
+      "INSERT INTO TripConfirm (origin, destination, distance, duration, customer, driver, date, totalcost) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
       [
         origin,
         destination,
