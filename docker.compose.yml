@@ -3,10 +3,15 @@ services:
     container_name: 'backend'
     build: ./backend
     restart: always
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: tripdb
     ports:
       - "8080:3000"
     depends_on:
-      - db
+      - postgres
     networks:
       - app-network
 
@@ -21,11 +26,12 @@ services:
     networks:
       - app-network
 
-  db:
-    container_name: 'database'
+  postgres:
+    container_name: 'postgres'
     image: postgres
     restart: always
     environment:
+      POSTGRES_HOST: postgres
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: tripdb
