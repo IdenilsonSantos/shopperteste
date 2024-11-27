@@ -6,7 +6,7 @@ import { Bounce, toast } from "react-toastify";
 
 export default function RideOptionsPage() {
   const { state, search } = useLocation();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const { origin, destination, availableDrivers, distance, duration } = state;
   const params = Object.fromEntries(new URLSearchParams(search));
@@ -22,7 +22,6 @@ export default function RideOptionsPage() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const rideConfirm = async (driver: any): Promise<void> => {
-
     try {
       const response = await fetchData<Record<string, unknown>>(
         "http://localhost:8080/ride/confirm",
@@ -42,9 +41,9 @@ export default function RideOptionsPage() {
       );
 
       if (response && response.success) {
-        navigate('/history')
+        navigate("/history");
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error(error || "Ocorreu um erro ao confirmar corrida", {
         transition: Bounce,
@@ -58,59 +57,61 @@ export default function RideOptionsPage() {
         <h1 className="text-2xl font-bold mb-6">
           Opções de motoristas para a corrida
         </h1>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Descrição</th>
-              <th>Veículo</th>
-              <th>Avaliação</th>
-              <th>Valor da viagem</th>
-              <th>Ação</th>
-            </tr>
-          </thead>
-          <tbody>
-            {availableDrivers && availableDrivers.length > 0 ? (
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              availableDrivers.map((driver: any) => (
-                <tr key={driver.id}>
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <div className="avatar">
-                        <div className="mask mask-squircle h-12 w-12">
-                          <img
-                            src={`https://ui-avatars.com/api/?name=${driver.name}&background=random`}
-                            alt={`Avatar de ${driver.name}`}
-                          />
+        <div className="overflow-x-auto max-h-[400px]">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Veículo</th>
+                <th>Avaliação</th>
+                <th>Valor da viagem</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody>
+              {availableDrivers && availableDrivers.length > 0 ? (
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                availableDrivers.map((driver: any) => (
+                  <tr key={driver.id}>
+                    <td>
+                      <div className="flex items-center gap-3">
+                        <div className="avatar">
+                          <div className="mask mask-squircle h-12 w-12">
+                            <img
+                              src={`https://ui-avatars.com/api/?name=${driver.name}&background=random`}
+                              alt={`Avatar de ${driver.name}`}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <div className="font-bold">{driver.name}</div>
                         </div>
                       </div>
-                      <div>
-                        <div className="font-bold">{driver.name}</div>
-                      </div>
-                    </div>
+                    </td>
+                    <td>{driver.description}</td>
+                    <td>{driver.vehicle}</td>
+                    <td>{driver.evaluation}</td>
+                    <td>{formatCurrency(driver.totalCost)}</td>
+                    <th>
+                      <Button
+                        className="btn btn-ghost btn-xs"
+                        label="Escolher"
+                        onClick={() => rideConfirm(driver)}
+                      />
+                    </th>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="text-center">
+                    Nenhum motorista disponível para esta rota
                   </td>
-                  <td>{driver.description}</td>
-                  <td>{driver.vehicle}</td>
-                  <td>{driver.evaluation}</td>
-                  <td>{formatCurrency(driver.totalCost)}</td>
-                  <th>
-                    <Button
-                      className="btn btn-ghost btn-xs"
-                      label="Escolher"
-                      onClick={() => rideConfirm(driver)}
-                    />
-                  </th>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={6} className="text-center">
-                  Nenhum motorista disponível para esta rota
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
       <div className="w-full md:w-1/2 h-[600px] flex items-center justify-center">
         {hasLocationData ? (
